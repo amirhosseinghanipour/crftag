@@ -1,0 +1,19 @@
+[package]
+name = "crftag"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+description = "CRF-based POS tagger and shallow parser (chunker) built on crfrs"
+license = "MIT"
+keywords = ["nlp", "persian", "farsi", "pos-tagging", "chunker"]
+categories = ["text-processing", "science"]
+authors = ["Amirhossein Ghanipour <d3v1ll3n@gmail.com>"]
+repository = "https://github.com/amirhosseinghanipour/crftag"
+homepage = "https://github.com/amirhosseinghanipour/crftag"
+documentation = "https://docs.rs/crftag"
+readme = "README.md"
+exclude = [".github/", "tests/"]
+
+[dependencies]
+crfrs = "0.1"
+thiserror = "2"
