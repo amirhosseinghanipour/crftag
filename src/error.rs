@@ -9,6 +9,10 @@ pub enum Error {
     /// Underlying CRF error.
     #[error(transparent)]
     Crf(#[from] crfrs::Error),
+    /// Hugging Face Hub download failed.
+    #[cfg(feature = "hf-hub")]
+    #[error("Hugging Face Hub error: {0}")]
+    Hub(String),
 }
 
 /// A specialized `Result` type for crftag operations.

@@ -59,6 +59,28 @@ impl POSTagger {
         Ok(tokens.iter().copied().zip(tags).collect())
     }
 
+    /// Downloads a model from the Hugging Face Hub and loads it.
+    ///
+    /// Requires the `hf-hub` feature.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # #[cfg(feature = "hf-hub")]
+    /// # {
+    /// use crftag::POSTagger;
+    /// let mut tagger = POSTagger::new();
+    /// tagger.load_from_hub("roshan-research/hazm-postagger", "pos_tagger.model").unwrap();
+    /// # }
+    /// ```
+    #[cfg(feature = "hf-hub")]
+    pub fn load_from_hub(&mut self, repo_id: &str, filename: &str) -> Result<()> {
+        use hf_hub::api::sync::Api;
+        let api = Api::new().map_err(|e| Error::Hub(e.to_string()))?;
+        let path = api.model(repo_id.to_string()).get(filename).map_err(|e| Error::Hub(e.to_string()))?;
+        self.load_model(path)
+    }
+
     /// Tags multiple sentences.
     pub fn tag_sents<'a>(
         &self,

@@ -110,6 +110,28 @@ impl Chunker {
         Ok(tagged.iter().zip(iob).map(|((w, p), iob)| (w.to_string(), p.to_string(), iob)).collect())
     }
 
+    /// Downloads a model from the Hugging Face Hub and loads it.
+    ///
+    /// Requires the `hf-hub` feature.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # #[cfg(feature = "hf-hub")]
+    /// # {
+    /// use crftag::Chunker;
+    /// let mut chunker = Chunker::new();
+    /// chunker.load_from_hub("roshan-research/hazm-chunker", "chunker.model").unwrap();
+    /// # }
+    /// ```
+    #[cfg(feature = "hf-hub")]
+    pub fn load_from_hub(&mut self, repo_id: &str, filename: &str) -> Result<()> {
+        use hf_hub::api::sync::Api;
+        let api = Api::new().map_err(|e| Error::Hub(e.to_string()))?;
+        let path = api.model(repo_id.to_string()).get(filename).map_err(|e| Error::Hub(e.to_string()))?;
+        self.load_model(path)
+    }
+
     /// Tags multiple sentences.
     pub fn tag_sents<'a>(&self, sents: &[Vec<(&'a str, &'a str)>]) -> Result<Vec<ChunkedSentence>> {
         sents.iter().map(|s| self.tag(s)).collect()
